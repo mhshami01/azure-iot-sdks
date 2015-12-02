@@ -32,7 +32,7 @@ IOTDM_CLIENT_HANDLE IoTDMClient_Create();
 IOTDM_CLIENT_RESULT IoTDMClient_Initialize(IOTDM_CLIENT_HANDLE h);
 
 IOTDM_CLIENT_RESULT IoTDMClient_SetOption(IOTDM_CLIENT_HANDLE h, const char *optionName, const void *value);
-IOTDM_CLIENT_RESULT IoTDMClient_AddNewObject(IOTDM_CLIENT_HANDLE h, const char *optionName, const void *value);
+IOTDM_CLIENT_RESULT IoTDMClient_AddNewObject(IOTDM_CLIENT_HANDLE h, const void *value);
 
 void IoTDMClient_DoWork(IOTDM_CLIENT_HANDLE client);
 void IoTDMClient_Destroy(IOTDM_CLIENT_HANDLE client);
