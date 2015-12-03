@@ -1,0 +1,3 @@
+[submodule "c/wakaama"]
+	path = c/wakaama
+	url = https://github.com/mhshami01/wakaama.git
