@@ -50,13 +50,10 @@ typedef struct CLIENT_DATA_TAG
 } CLIENT_DATA;
 
 
-static size_t currentObject = 2;
-
-
 /**
  *  Must be implemented by the security object. please see object_security.c provided with the samples.
  */
-char *get_server_uri(lwm2m_object_t * objectP, uint16_t secObjInstID);
+char *get_server_uri(lwm2m_object_t *objectP, uint16_t secObjInstID);
 
 
 uint32_t parse_int(uint8_t *bytes, size_t length)
@@ -334,7 +331,7 @@ IOTDM_CLIENT_HANDLE IoTDMClient_Create()
 }
 
 
-IOTDM_CLIENT_RESULT IoTDMClient_Initialize(IOTDM_CLIENT_HANDLE h)
+IOTDM_CLIENT_RESULT IoTDMClient_Connect(IOTDM_CLIENT_HANDLE h)
 {
     if (NULL == h)
     {
@@ -381,7 +378,6 @@ IOTDM_CLIENT_RESULT IoTDMClient_Initialize(IOTDM_CLIENT_HANDLE h)
 }
 
 
-static const char *NR_OBJECTS = "Number Of Objects";
 IOTDM_CLIENT_RESULT IoTDMClient_SetOption(IOTDM_CLIENT_HANDLE h, const char *optionName, const void *value)
 {
     if ((NULL == h) || (NULL == value))
@@ -390,17 +386,6 @@ IOTDM_CLIENT_RESULT IoTDMClient_SetOption(IOTDM_CLIENT_HANDLE h, const char *opt
     }
 
     CLIENT_DATA *client = (CLIENT_DATA *) h;
-    if (0 == strncmp(NR_OBJECTS, optionName, strlen(NR_OBJECTS)))
-    {
-        client->nrObjects = *((int *) value);
-        client->allObjects = (lwm2m_object_t **)lwm2m_malloc(client->nrObjects * sizeof(lwm2m_object_t *));
-        if (NULL == client->allObjects)
-        {
-            return IOTDM_CLIENT_ERROR;
-        }
-    }
-
-    else
     {
         // unknown option
         return IOTDM_CLIENT_ERROR;
