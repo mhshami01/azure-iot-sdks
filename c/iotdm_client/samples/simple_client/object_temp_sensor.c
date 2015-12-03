@@ -90,7 +90,7 @@ static uint8_t prv_temp_sensor_read(uint16_t instanceId,
     uint8_t result;
     int i;
 
-	targetP = (temp_sensor_instance_t *) lwm2m_list_find(objectP->instanceList, instanceId);
+    targetP = (temp_sensor_instance_t *) lwm2m_list_find(objectP->instanceList, instanceId);
     if (NULL == targetP) return COAP_404_NOT_FOUND;
 
     // is the server asking for the full instance ?

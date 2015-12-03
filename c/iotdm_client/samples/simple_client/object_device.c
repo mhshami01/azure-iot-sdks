@@ -169,8 +169,7 @@ static int prv_check_time_offset(char * buffer,
     return 1;
 }
 
-static uint8_t prv_set_value(lwm2m_data_t  *tlvP,
-                             device_data_t *devDataP)
+static uint8_t prv_set_value(lwm2m_data_t *tlvP, device_data_t *devDataP)
 {
     // a simple switch structure is used to respond at the specified resource asked
     switch (tlvP->id)
@@ -193,7 +192,7 @@ static uint8_t prv_set_value(lwm2m_data_t  *tlvP,
 
         case RES_O_SERIAL_NUMBER:
         {
-			FILE *fd = fopen("/factory/serial_number", "r");
+            FILE *fd = fopen("/factory/serial_number", "r");
             if (NULL == fd)
             {
                 tlvP->value    = (uint8_t *) PRV_NOT_AVAILABLE;
@@ -277,7 +276,7 @@ static uint8_t prv_set_value(lwm2m_data_t  *tlvP,
 
         case RES_O_AVL_POWER_SOURCES: 
         {
-			lwm2m_data_t *subTlvP;
+            lwm2m_data_t *subTlvP;
 
             subTlvP = lwm2m_data_new(2);
 
@@ -421,7 +420,7 @@ static uint8_t prv_set_value(lwm2m_data_t  *tlvP,
             struct tm *t = localtime(&raw);
 
 #if defined(WIN32)
-			sprintf(devDataP->time_offset, "%d:00", 0 /* timezone() / (3600)*/);
+            sprintf(devDataP->time_offset, "%d:00", 0 /* timezone() / (3600)*/);
 #else
 //            sprintf(devDataP->time_offset, "%d:00", t->tm_gmtoff / (3600));
 #endif
@@ -444,26 +443,26 @@ static uint8_t prv_set_value(lwm2m_data_t  *tlvP,
 
             value[0] = '\0';
 #if defined(WIN32)
-			TIME_ZONE_INFORMATION tz;
-			DWORD rv = GetTimeZoneInformation(&tz);
-			if (TIME_ZONE_ID_INVALID == rv)
-			{
-				return COAP_500_INTERNAL_SERVER_ERROR;
-			}
+            TIME_ZONE_INFORMATION tz;
+            DWORD rv = GetTimeZoneInformation(&tz);
+            if (TIME_ZONE_ID_INVALID == rv)
+            {
+                return COAP_500_INTERNAL_SERVER_ERROR;
+            }
 
-			WideCharToMultiByte(CP_UTF8, 0, tz.StandardName, lstrlenW(tz.StandardName), value, 40, NULL, NULL);
-			if (TIME_ZONE_ID_DAYLIGHT == rv)
-			{
-				value[strlen(value)] = '/';
-				WideCharToMultiByte(CP_UTF8, 0, tz.DaylightName, lstrlenW(tz.DaylightName), &value[strlen(value)], 40 - strlen(value), NULL, NULL);
-			}
+            WideCharToMultiByte(CP_UTF8, 0, tz.StandardName, lstrlenW(tz.StandardName), value, 40, NULL, NULL);
+            if (TIME_ZONE_ID_DAYLIGHT == rv)
+            {
+                value[strlen(value)] = '/';
+                WideCharToMultiByte(CP_UTF8, 0, tz.DaylightName, lstrlenW(tz.DaylightName), &value[strlen(value)], 40 - strlen(value), NULL, NULL);
+            }
 #else
-//			tzset();
-//			sprintf(value, "%s", tzname[0]);
-//			if (daylight > 0) /* add the daylight saving portion as appropriate */
-//			{
-//				sprintf(&value[strlen(value)], "/%s", tzname[1]);
-//			}
+//            tzset();
+//            sprintf(value, "%s", tzname[0]);
+//            if (daylight > 0) /* add the daylight saving portion as appropriate */
+//            {
+//                sprintf(&value[strlen(value)], "/%s", tzname[1]);
+//            }
 #endif
 
             tlvP->value  = (uint8_t *) value;
@@ -637,9 +636,9 @@ static uint8_t prv_device_execute(uint16_t instanceId,
 
             return COAP_204_CHANGED;
 #else
-			return COAP_405_METHOD_NOT_ALLOWED;
+            return COAP_405_METHOD_NOT_ALLOWED;
 #endif
-		}
+        }
 
         case RES_O_FACTORY_RESET:
         {
@@ -649,7 +648,7 @@ static uint8_t prv_device_execute(uint16_t instanceId,
             struct stat sb;
             if (0 != stat("/home/root/factoryImage.zip", &sb)) return COAP_400_BAD_REQUEST;
 
-            pid_t child = vfork();
+            pid_t child = fork();
             if (child == 0)
             {
                 setuid(0);
@@ -668,9 +667,9 @@ static uint8_t prv_device_execute(uint16_t instanceId,
             else if (child < 0) return COAP_400_BAD_REQUEST;
             else return COAP_204_CHANGED;
 #else
-			return COAP_405_METHOD_NOT_ALLOWED;
+            return COAP_405_METHOD_NOT_ALLOWED;
 #endif
-		}
+        }
 
         case RES_O_RESET_ERROR_CODE:
             LOG("\n\t RESET ERROR CODE\r\n\n");
@@ -768,9 +767,9 @@ lwm2m_object_t *make_device_object()
             ((device_data_t*)deviceObj->userData)->time = raw;
 #if defined(EDISON)
             struct tm *t = localtime(&raw);
-			sprintf(((device_data_t *) deviceObj->userData)->time_offset, "%d:00", t->tm_gmtoff / (3600));
+            sprintf(((device_data_t *) deviceObj->userData)->time_offset, "%d:00", t->tm_gmtoff / (3600));
 #else
-			sprintf(((device_data_t *) deviceObj->userData)->time_offset, "%d:00", 0 /* timezone() / (3600) */);
+            sprintf(((device_data_t *) deviceObj->userData)->time_offset, "%d:00", 0 /* timezone() / (3600) */);
 #endif
         }
 

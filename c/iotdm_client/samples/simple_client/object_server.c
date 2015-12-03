@@ -138,14 +138,14 @@ static uint8_t prv_server_read(uint16_t instanceId,
 
     LOG("    server_read(%d)\n", instanceId);
 
-	targetP = (server_instance_t *) lwm2m_list_find(objectP->instanceList, instanceId);
+    targetP = (server_instance_t *) lwm2m_list_find(objectP->instanceList, instanceId);
     if (NULL == targetP) return COAP_404_NOT_FOUND;
 
     if (targetP->disabled)
     {
         LOG("    server(%d) is disabled\n", instanceId);
 
-		return COAP_405_METHOD_NOT_ALLOWED;
+        return COAP_405_METHOD_NOT_ALLOWED;
     }
 
     // is the server asking for the full instance ?
@@ -269,7 +269,7 @@ static uint8_t prv_server_write(uint16_t instanceId,
         //        prop_writeIntValue("Server", "Lifetime", targetP->lifetime);
             LOG("   ****----> targetP->lifetime: %d\n", targetP->lifetime);
 
-			break;
+            break;
 
         case LWM2M_SERVER_MIN_PERIOD_ID:
             result = prv_set_int_value(dataArray + i, &(targetP->defaultMinPeriod));
@@ -311,8 +311,8 @@ static uint8_t prv_server_write(uint16_t instanceId,
 
         case LWM2M_SERVER_BINDING_ID:
             if ((dataArray[i].length > 0 && dataArray[i].length <= 3)
-			  && (strncmp((char*)dataArray[i].value, "T", dataArray[i].length) == 0
-			  || strncmp((char*)dataArray[i].value, "U",   dataArray[i].length) == 0
+              && (strncmp((char*)dataArray[i].value, "T", dataArray[i].length) == 0
+              || strncmp((char*)dataArray[i].value, "U",   dataArray[i].length) == 0
               || strncmp((char*)dataArray[i].value, "UQ",  dataArray[i].length) == 0
               || strncmp((char*)dataArray[i].value, "S",   dataArray[i].length) == 0
               || strncmp((char*)dataArray[i].value, "SQ",  dataArray[i].length) == 0
@@ -373,7 +373,7 @@ static uint8_t prv_server_execute(uint16_t instanceId,
             {
                 LOG("    disable request for server(%d)\n", instanceId);
 
-				targetP->disabled = true;
+                targetP->disabled = true;
                 return COAP_204_CHANGED;
             }
 
@@ -475,7 +475,7 @@ void display_server_object(lwm2m_object_t * object)
 #ifdef WITH_LOGS
     LOG("  /%u: Server object, instances:\r\n", object->objID);
 
-	server_instance_t * serverInstance = (server_instance_t *)object->instanceList;
+    server_instance_t * serverInstance = (server_instance_t *)object->instanceList;
     while (serverInstance != NULL)
     {
         LOG("    /%u/%u: instanceId: %u, shortServerId: %u, lifetime: %u, storing: %s, binding: %s\r\n",
@@ -483,7 +483,7 @@ void display_server_object(lwm2m_object_t * object)
                 serverInstance->instanceId, serverInstance->shortServerId, serverInstance->lifetime,
                 serverInstance->storing ? "true" : "false", serverInstance->binding);
 
-		serverInstance = (server_instance_t *)serverInstance->next;
+        serverInstance = (server_instance_t *)serverInstance->next;
     }
 #endif
 }
@@ -517,7 +517,7 @@ lwm2m_object_t *make_server_object(int serverId, int lifetime, bool storing)
         serverInstance->storing = storing;
         serverInstance->disabled = false;
     //  prop_readIntValue("Server", "Disable Timeout", &(serverInstance->disableTimeout));
-		sprintf(serverInstance->binding, "T");
+        sprintf(serverInstance->binding, "T");
 
         serverObj->instanceList = LWM2M_LIST_ADD(serverObj->instanceList, serverInstance);
 

@@ -302,10 +302,10 @@ static uint8_t prv_security_write(uint16_t instanceId,
         {
             int64_t value;
 
-			LOG("    security_object->prv_write: %s ", dataArray + i);
+            LOG("    security_object->prv_write: %s ", dataArray + i);
             if (1 == lwm2m_data_decode_int(dataArray + i, &value))
             {
-			    LOG("- %d\n", value);
+                LOG("- %d\n", value);
                 if (value >= 0 && value <= 0xFFFF)
                 {
                     targetP->shortID = value;
@@ -318,7 +318,7 @@ static uint8_t prv_security_write(uint16_t instanceId,
             }
             else
             {
-				LOG("- BAD!\n");
+                LOG("- BAD!\n");
                 result = COAP_400_BAD_REQUEST;
             }
         }
@@ -506,12 +506,11 @@ lwm2m_object_t * make_security_object(int serverId, const char* serverUri, bool 
     return securityObj;
 }
 
-char * get_server_uri(lwm2m_object_t * objectP,
-                      uint16_t secObjInstID)
+char * get_server_uri(lwm2m_object_t *objectP, uint16_t secObjInstID)
 {
-    security_instance_t * targetP = (security_instance_t *)LWM2M_LIST_FIND(objectP->instanceList, secObjInstID);
+    security_instance_t *targetP = (security_instance_t *)LWM2M_LIST_FIND(objectP->instanceList, secObjInstID);
 
-	char *rv = NULL;
+    char *rv = NULL;
     if (NULL != targetP)
     {
         rv = lwm2m_strdup(targetP->uri);
