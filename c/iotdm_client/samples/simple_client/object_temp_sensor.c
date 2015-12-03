@@ -19,6 +19,112 @@
 
 #include "simple_client.h"
 
+typedef bool errcode;
+
+#define FAILED(x) (!x)
+
+#define CHK(x,msg) \
+    if (FAILED(x)) { \
+        printf msg; \
+        printf("File=%s, Line=%d\n",__FILE__,__LINE__); \
+        success =  x; \
+        goto exit; \
+    }
+
+#define FAIL(msg) CHK(false,msg);
+
+#define SLOTS "/sys/devices/bone_capemgr.9/slots"
+#define BB_ADC "BB-ADC"
+
+#define AIN0 "/sys/devices/ocp.3/helper.12/AIN0"
+
+errcode writeFile(const char* fileName, const char* contents)
+{
+    errcode success = true;
+    FILE* f = NULL;
+    size_t length = strlen(contents);
+
+    f = fopen(fileName, "w");
+    CHK(f, ("fileOpen on %s failed\n", fileName));
+
+    success = (fwrite(contents, sizeof(char), length, f) == length);
+    CHK(success, ("fwrite on %s failed\n", fileName));
+
+exit:
+    if (f != NULL)
+    {
+        fclose(f);
+    }
+    return success;
+}
+
+unsigned int ReadUInt(const char* fileName)
+{
+    unsigned int value = 0;
+    FILE* f = NULL;
+    errcode success = true;
+    char ch;
+
+    f = fopen(fileName, "r");
+    CHK(f, ("fileOpen on %s failed\n", fileName));
+
+    while (fread(&ch, sizeof(ch), 1, f) == 1)
+    {
+        if (ch >= '0' && ch <= '9')
+        {
+            value *= 10;
+            value += ch - '0';
+        }
+    }
+
+exit:
+    if (f != NULL)
+    {
+        fclose(f);
+    }
+
+    return value;
+}
+
+void EnableTempDevice()
+{
+    errcode success = true;
+
+    success = writeFile(SLOTS, BB_ADC);
+    CHK(success, ("writeFile failed\n"));
+
+exit:
+    ;
+}
+
+float RawToCelcius(unsigned int rawValue)
+{
+    // Math from http://www.seeedstudio.com/wiki/Grove_-_Temperature_Sensor_V1.2
+    const int B = 4275;                 // B value of the thermistor
+    const float R0 = 100000;            // R0 = 100k
+    float temperature;
+
+    float R = 1023.0 / ((float)rawValue) - 1.0;
+    R = R0*R;
+
+    temperature = 1.0 / (log(R / R0) / B + 1 / 298.15) - 273.15;//convert to temperature via datasheet ;
+
+    return temperature;
+}
+
+float CelciusToFarenheit(float c)
+{
+    return c * 9 / 5 + 32;
+}
+
+float GetTemp()
+{
+    unsigned int rawValue = ReadUInt(AIN0);
+    float celcius = RawToCelcius(rawValue);
+    float farenheit = CelciusToFarenheit(celcius);
+    return farenheit;
+}
+
 typedef struct _temp_sensor_instance_
 {
     struct _temp_sensor_instance_ *next;    // matches lwm2m_list_t::next
@@ -32,11 +138,13 @@ typedef struct _temp_sensor_instance_
     float     maxRange;
 } temp_sensor_instance_t;
 
-float prv_get_current_temperature()
+void prv_get_current_temperature(temp_sensor_instance_t *targetP)
 {
-    float retValue = 0.0;
+    float retValue = GetTemp();
 
-    return retValue;
+    targetP->value = retValue;
+    if (retValue > targetP->maxValue) targetP->maxValue = retValue;
+    if (retValue < targetP->minValue) targetP->minValue = retValue;
 }
 
 static uint8_t prv_get_value(lwm2m_data_t *tlvP, temp_sensor_instance_t *targetP)
@@ -46,7 +154,8 @@ static uint8_t prv_get_value(lwm2m_data_t *tlvP, temp_sensor_instance_t *targetP
     switch (tlvP->id)
     {
         case 5700:
-            lwm2m_data_encode_float(targetP->value = prv_get_current_temperature(), tlvP);
+            prv_get_current_temperature(targetP);
+            lwm2m_data_encode_float(targetP->value, tlvP);
             break;
 
         case 5701:
@@ -250,8 +359,10 @@ lwm2m_object_t *make_temperature_sensor_object()
         }
 
         memset(oneInstance, 0, sizeof(temp_sensor_instance_t));
+        EnableTempDevice();
 
         oneInstance->instanceId = 0;
+        oneInstance->units[0] = 'F';
 
         oneObj->instanceList = LWM2M_LIST_ADD(oneObj->instanceList, oneInstance);
 

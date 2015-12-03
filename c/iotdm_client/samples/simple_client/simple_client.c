@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
     }
 
     (void)printf("Info: connect to associated server and initialize an LWM2M session\r\n");
-    if (IOTDM_CLIENT_OK != IoTDMClient_Initialize(iotDMClient))
+    if (IOTDM_CLIENT_OK != IoTDMClient_Connect(iotDMClient))
     {
         (void)printf("ERROR: failure to start the client: %p\r\n", iotDMClient);
         return -1;
