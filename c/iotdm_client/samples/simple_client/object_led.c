@@ -21,9 +21,15 @@ typedef struct _led_instance_
     bool        lever;
 } led_instance_t;
 
+void prv_init_device()
+{
+    system("echo 67 > /sys/class/gpio/export");
+    system("echo out > /sys/devices/virtual/gpio/gpio67/direction");
+}
+
 int prv_read_lever(bool *state)
 {
-    FILE *fp = fopen("/sys/class/leds/beaglebone:green:usr3/brightness", "r");
+    FILE *fp = fopen("/sys/devices/virtual/gpio/gpio67/value", "r");
     if (NULL == fp) return -1;
 
     char data[1];
@@ -113,11 +119,11 @@ static uint8_t prv_led_read(uint16_t instanceId,
 
 int prv_write_lever(bool value)
 {
-    FILE *fp = fopen("/sys/class/leds/beaglebone:green:usr3/brightness", "w");
+    FILE *fp = fopen("/sys/devices/virtual/gpio/gpio67/value", "w");
     if (NULL == fp) return -1;
 
-    char data[1];
-    data[0] = (value ? '1' : '0');
+    char data[2];
+    data[0] = (value ? '1' : '0'); data[1] = '\0';
     if (EOF == fputs(data, fp))
     {
         fclose(fp);
@@ -126,6 +132,7 @@ int prv_write_lever(bool value)
 
     fflush(fp);
     fclose(fp);
+
     return 1;
 }
 
@@ -189,8 +196,7 @@ static uint8_t prv_led_execute(uint16_t instanceId,
     }
 }
 
-static uint8_t prv_led_delete(uint16_t id,
-                                 lwm2m_object_t * objectP)
+static uint8_t prv_led_delete(uint16_t id, lwm2m_object_t *objectP)
 {
     led_instance_t *oneInstance;
 
@@ -263,6 +269,7 @@ lwm2m_object_t *make_led_object()
         }
 
         memset(oneInstance, 0, sizeof(led_instance_t));
+        prv_init_device();
 
         oneInstance->instanceId = 0;
 
