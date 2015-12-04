@@ -1,0 +1,2 @@
+to build the product for BB on UBUNTU:
+cmake -D CMAKE_C_COMPILER=arm-linux-gnueabi-gcc-4.6
