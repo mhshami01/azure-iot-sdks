@@ -16,11 +16,23 @@ set(LIBCOMMON_DIR ${PROJECT_SOURCE_DIR}/../../../common)
 
 set(common_c_files
 	${LIBCOMMON_DIR}/adapters/agenttime.c
+	${LIBCOMMON_DIR}/src/list.c
+)
+
+if(WIN32)
+set(common_platform_c_files
+	${LIBCOMMON_DIR}/adapters/httpapi_winhttp.c
+	${LIBCOMMON_DIR}/adapters/lock_win32.c
+	${LIBCOMMON_DIR}/adapters/platform_win32.c
+	${LIBCOMMON_DIR}/adapters/threadapi_win32.c
+)
+else()
+set(common_platform_c_files
 	${LIBCOMMON_DIR}/adapters/lock_pthreads.c
 	${LIBCOMMON_DIR}/adapters/socketio_berkeley.c
 	${LIBCOMMON_DIR}/adapters/threadapi_pthreads.c
-	${LIBCOMMON_DIR}/src/list.c
 )
+endif()
 
 set(simple_client_sample_c_files
 	object_device.c
@@ -50,7 +62,11 @@ include_directories(${LIBIOTDM_DIR}/inc)
 include_directories(${LIBLWM2M_DIR}/core)
 include_directories(${LIBCOMMON_DIR}/inc)
 
-add_executable(simple_dm_client ${simple_client_sample_c_files} ${common_c_files})
+add_executable(simple_dm_client
+	${simple_client_sample_c_files}
+	${common_c_files}
+	${common_platform_c_files}
+)
 
 target_link_libraries(simple_dm_client iotdm_client)
 	
