@@ -4,4 +4,4 @@
 #this is CMakeLists.txt for samples. There's noithig here, except redirections to 
 #individual samples
 
-add_subdirectory(simple_client)
+add_subdirectory(beaglebonegreen_kit)
