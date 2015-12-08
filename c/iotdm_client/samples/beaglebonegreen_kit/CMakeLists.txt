@@ -7,6 +7,7 @@ cmake_minimum_required(VERSION 3.0)
 
 project(beaglebonegreen_kit)
 
+add_definitions(-Os)
 add_definitions(-Wno-unused-result)
 add_definitions(-DLWM2M_CLIENT_MODE -DWITH_LOGS -DLWM2M_LITTLE_ENDIAN -DCOAP_TCP)
 
