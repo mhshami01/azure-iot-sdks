@@ -44,7 +44,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "simple_client.h"
+#include "program.h"
 
 #define LWM2M_SECURITY_URI_ID                 0
 #define LWM2M_SECURITY_BOOTSTRAP_ID           1

@@ -45,7 +45,7 @@ set(sample_c_files
 	program.c
 )
 
-set(sample_c_files
+set(sample_h_files
 	program.h
 )
 
@@ -72,7 +72,7 @@ target_link_libraries(beaglebonegreen_kit iotdm_client)
 	
 if(WIN32)
 else()
-	target_link_libraries(beaglebonegreen_kit "-static-libgcc -static")
+	target_link_libraries(beaglebonegreen_kit "-Os")
 	target_link_libraries(beaglebonegreen_kit m pthread)
 endif()
 

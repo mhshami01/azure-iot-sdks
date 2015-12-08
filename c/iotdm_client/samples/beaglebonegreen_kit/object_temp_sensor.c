@@ -17,7 +17,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "simple_client.h"
+#include "program.h"
 
 typedef bool errcode;
 

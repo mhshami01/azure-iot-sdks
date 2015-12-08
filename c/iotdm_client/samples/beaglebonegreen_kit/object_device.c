@@ -63,7 +63,7 @@
 
 #include <sys/stat.h>
 
-#include "simple_client.h"
+#include "program.h"
 
 
 #define PRV_NOT_AVAILABLE     "N/A"

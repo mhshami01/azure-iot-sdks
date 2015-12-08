@@ -36,6 +36,8 @@ set(wakaama_h_files
 	${LIBLWM2M_DIR}/core/er-coap-13/er-coap-13.h
 )
 
+set(LIBCOMMON_DIR ${PROJECT_SOURCE_DIR}/../common)
+
 set(iotdm_client_c_files
 	./src/iotdm_client.c
 )
@@ -50,6 +52,7 @@ set(IOTDM_CLIENT_INC_FOLDER ${CMAKE_CURRENT_LIST_DIR}/inc CACHE INTERNAL "this i
 include_directories(${LIBLWM2M_DIR}/core)
 include_directories(${LIBLWM2m_DIR}/core/er-coap-13)
 include_directories(${IOTDM_CLIENT_INC_FOLDER})
+include_directories(${LIBCOMMON_DIR}/inc)
 
 IF(WIN32)
 	#windows needs this define

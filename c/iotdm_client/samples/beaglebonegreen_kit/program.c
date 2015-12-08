@@ -1,5 +1,5 @@
-// simple_client.c : Defines the entry point for the console application.
-#include "simple_client.h"
+// program.c : Defines the entry point for the console application.
+#include "program.h"
 
 static const int   serverID = 124;
 static const int   keepAlive = 300;
