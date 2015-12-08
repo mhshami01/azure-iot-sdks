@@ -2,7 +2,7 @@
 #include "program.h"
 
 static const int   serverID = 124;
-static const int   keepAlive = 300;
+static const int   lifeTime = 300;
 static const char *serverURI = "coap://chiklee-m2m-t.cloudapp.net:5683";
 
 int main(int argc, char *argv[])
@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
     }
 
     (void)printf("Info: prepare the LWM2M Server Object\r\n");
-    iotObject = make_server_object(serverID, keepAlive, false);
+    iotObject = make_server_object(serverID, lifeTime, false);
     if (IOTDM_CLIENT_OK != IoTDMClient_AddNewObject(iotDMClient, iotObject))
     {
         (void)printf("ERROR: failure to add the server object for client: %p\r\n", iotDMClient);
